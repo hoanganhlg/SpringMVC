@@ -14,13 +14,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login page</title>
-<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" type="text/css">--%>
-<%--    <link  href="<c:url value="/css/login.css"/>" rel="stylesheet" type="text/css">--%>
     <link rel="stylesheet" type="text/css" href="/Mini-project-springmvc/getResource/css/login.css">
 </head>
 <body>
 <div class="login-container">
-    <form action="/checkLogin.html" method="post">
+    <form action="<c:url value="/checkLogin"/>" method="get">
         <fieldset>
             <legend>Login</legend>
             <div class="login-info">
@@ -31,10 +29,21 @@
             </div>
             <button type="submit" >LOG IN
             </button>
-            <p>Not yet registered? <a href="#">Sign up</a></p>
+            <p>Not yet registered? <a href="<c:url value="/register"/>">Sign up</a></p>
         </fieldset>
     </form>
 </div>
+
+<div class="popup-overlay"></div>
+<div class="popup">
+    <p>Invalid username or password. Please try again.</p>
+    <button onclick="closePopup()">Confirm</button>
+</div>
 <script type="text/javascript" src="/Mini-project-springmvc/getResource/js/login.js" ></script>
+<script>
+    <c:if test="${error != null}">
+    showPopup();
+    </c:if>
+</script>
 </body>
 </html>
