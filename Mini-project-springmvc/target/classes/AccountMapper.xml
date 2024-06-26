@@ -17,7 +17,7 @@
     </select>
     <insert id="insertAccount" parameterType="Account">
         INSERT INTO Account(username, password, createBy, updateBy, createAt, updateAt)
-        VALUE(#{username}, #{password}, #{createBy}, #{updateBy}, #{createAt}, #{updateAT})
+        VALUE(#{username}, #{password}, #{createBy}, #{updateBy}, #{createAt}, #{updateAt})
     </insert>
 
 </mapper>

@@ -5,6 +5,9 @@
 <configuration>
     <typeAliases>
         <typeAlias alias="Account" type="org.example.entity.Account"/>
+        <typeAlias alias="Employee" type="org.example.entity.Employee"/>
+        <typeAlias alias="Project" type="org.example.entity.Project"/>
+        <typeAlias alias="Team" type="org.example.entity.Team"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">
@@ -18,8 +21,9 @@
         </environment>
     </environments>
     <mappers>
-<!--        <package name="org.example.mybatis"/>-->
         <mapper resource="AccountMapper.xml"/>
-<!--        <mapper url="C:\Users\63200346\Downloads\Mini-project-springmvc\src\main\java\org\example\mybatis\AccountMapper.xml"/>-->
+        <mapper resource="EmployeeMapper.xml"/>
+        <mapper resource="ProjectMapper.xml"/>
+        <mapper resource="TeamMapper.xml"/>
     </mappers>
 </configuration>

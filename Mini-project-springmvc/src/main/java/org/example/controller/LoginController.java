@@ -2,14 +2,15 @@ package org.example.controller;
 
 import org.example.dao.AccountMapper;
 import org.example.dto.AccountDTO;
-import org.example.entity.Account;
+import org.example.util.AccountHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Objects;
 
 @Controller
 public class LoginController {
@@ -40,5 +41,27 @@ public class LoginController {
     public  ModelAndView register(){
         ModelAndView registerView = new ModelAndView("register");
         return registerView;
+    }
+
+    @RequestMapping(value = "/checkRegister", method = RequestMethod.GET)
+    public ModelAndView checkRegister(@RequestParam("username") String username,
+                                      @RequestParam("password") String password,
+                                      @RequestParam("repasssword") String repassword){
+        ModelAndView registerView = new ModelAndView("register");
+        if(accountMapper.checkExist(username)){
+            registerView.addObject("usernameerror", "Username already exists");
+            return registerView;
+        } else if (!AccountHandler.checkUsername(username)) {
+            registerView.addObject("usernameerror", "Username only include number, letters and username's length must be smaller than 45 character");
+            return registerView;
+        } else if (!Objects.equals(password, repassword)) {
+            registerView.addObject("passworderror", "Password does not pass");
+            return registerView;
+        } else {
+            AccountDTO accountDTO = new AccountDTO(username, password);
+            accountMapper.insertAccount(accountDTO);
+            registerView.addObject("error", "success");
+            return registerView;
+        }
     }
 }
