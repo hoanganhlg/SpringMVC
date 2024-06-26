@@ -23,7 +23,7 @@ public class AccountMapper {
 
     public Boolean checkAccount(String username, String password){
         SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession();
-        List<Account> accountList = session.selectList("getAllProject");
+        List<Account> accountList = session.selectList("getAllAccount");
         for (Account account : accountList) {
             if(account.getUsername().equals(username) && account.getPassword().equals(AccountHandler.hashPassword(password))){
                 return true;
@@ -36,7 +36,7 @@ public class AccountMapper {
 
     public Boolean checkExist(String username){
         SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession();
-        List<Account> accountList = session.selectList("getAllProject");
+        List<Account> accountList = session.selectList("getAllAccount");
         for (Account account : accountList) {
             if(account.getUsername().equals(username)){
                 return true;

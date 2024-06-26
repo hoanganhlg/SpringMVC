@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Objects;
 
@@ -26,11 +27,9 @@ public class LoginController {
     @RequestMapping(value="/checkLogin", method = RequestMethod.GET)
     public ModelAndView checkLogin(@RequestParam("username") String username,
                                    @RequestParam("password") String password) {
-        ModelAndView listUser = new ModelAndView("listEmployee");
         ModelAndView loginView = new ModelAndView("login");
         if(accountMapper.checkAccount(username, password)){
-            listUser.addObject("account", username);
-            return listUser;
+            return new ModelAndView(new RedirectView("/Mini-project-springmvc/listEmployee?username=" + username));
         } else {
             loginView.addObject("error", "Invalid username or password");
             return loginView;

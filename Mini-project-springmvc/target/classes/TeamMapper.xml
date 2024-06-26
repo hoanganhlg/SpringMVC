@@ -10,5 +10,8 @@
     <select id="getAllTeam" resultType="Team" resultMap="teamResult">
         SELECT * FROM team
     </select>
+    <select id="getTeamByID" resultType="Team" resultMap="teamResult">
+        SELECT * FROM team WHERE teamID = #{teamID}
+    </select>
 
 </mapper>

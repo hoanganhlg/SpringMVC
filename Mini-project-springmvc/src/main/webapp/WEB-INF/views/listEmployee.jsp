@@ -73,6 +73,27 @@
             <th>Action</th>
         </tr>
         </thead>
+        <c:forEach items="#{listEmployee}" var="e" varStatus="status">
+            <tbody>
+            <tr>
+                <th></th>
+                <th>${status.count}</th>
+                <th>${e.empID}</th>
+                <th>${e.empName}</th>
+                <th>${e.empGender}</th>
+                <th>${e.empBirthday}</th>
+                <th>${e.empPhone}</th>
+                <th>${e.empEmail}</th>
+                <th>${e.empAddress}</th>
+                <th>${e.teamName}</th>
+                <th>${e.projectName}</th>
+                <th>${e.leaderName}</th>
+                <th>${e.empStartDate}</th>
+                <th>${e.empStatus}</th>
+                <th>${username}</th>
+            </tr>
+            </tbody>
+        </c:forEach>
     </table>
 </div>
 <script type="text/javascript" src="/Mini-project-springmvc/getResource/js/listEmployee.js" ></script>

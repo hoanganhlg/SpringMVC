@@ -11,4 +11,8 @@
         SELECT * FROM project
     </select>
 
+    <select id="getProjectByID" resultType="Project" resultMap="prjResult">
+        SELECT * FROM project WHERE projectID = #{projectID}
+    </select>
+
 </mapper>
