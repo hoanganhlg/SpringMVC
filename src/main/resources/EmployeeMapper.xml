@@ -60,6 +60,9 @@
         LEFT JOIN Team t ON e.teamID = t.teamID
         LEFT JOIN Project p ON e.projectID = p.projectID
     </select>
+    <select id="getEmployeeByID" resultType="Employee" resultMap="empResult">
+        select * from Employee WHERE empID = #{empID}
+    </select>
     <insert id="insertEmployee" parameterType="Employee">
         INSERT INTO Employee (
         empID, empName, empGender, empBirthday,
@@ -71,7 +74,7 @@
         #{empID}, #{empName}, #{empGender}, #{empBirthday},
         #{empPhone}, #{empEmail}, #{empAddress}, #{empStartDate},
         #{empStatus}, #{createBy}, #{updateBy}, #{createAt},
-        #{updateAt}, #{teamID}, #{projectID}, 0
+        #{updateAt}, #{teamID}, #{projectID}, #{isLeader}
         )
     </insert>
     <update id="updateEmployee" parameterType="Employee">
@@ -89,12 +92,15 @@
         updateAt = #{updateAt},
         teamID = #{teamID},
         projectID = #{projectID},
-        isLeader = 0
         WHERE
         empID = #{empID}
     </update>
     <select id="getLastUserId" resultType="int">
-        SELECT MAX(id) AS last_id
-        FROM users
+        SELECT MAX(empID) AS last_id
+        FROM Employee
     </select>
+    <delete id="deleteEmployees" parameterType="string">
+        DELETE FROM employee
+        WHERE empID IN #{ids}
+    </delete>
 </mapper>

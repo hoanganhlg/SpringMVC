@@ -53,7 +53,7 @@
     <label>Total: ${fn:length(listEmployee)}</label>
     <div class="crudButtons">
         <button onclick="showPopup()">New</button>
-        <button>Delete</button>
+        <button onclick="deleteSelectedEmployees()">Delete</button>
     </div>
 </div>
 <div>
@@ -100,7 +100,7 @@
                     <c:if test="${e.empStatus}">Active</c:if>
                     <c:if test="${!e.empStatus}">Inactive</c:if>
                 </th>
-                <th><i class="fa-regular fa-pen-to-square"></i></th>
+                <th onclick="showPopupWithData(${e.empID})" style="cursor: pointer"><i class="fa-regular fa-pen-to-square"></i></th>
             </tr>
             </tbody>
         </c:forEach>
@@ -109,37 +109,41 @@
 <div class="popup-overlay"></div>
 <div class="popup">
     <p>Employee Information</p>
-    <form action="<c:url value="/addNewEmployee"/>" method="post" modelAttribute="employeeModel">
+    <form action="<c:url value="/addNewEmployee?username=${username}"/>" method="post" modelAttribute="employeeModel">
         <div class="empInformation">
             <label for="empName">Name</label>
-            <input type="text" id="empName" path="empName" required>
+            <input type="text" id="empName" name="empName" required>
             <label for="empGender">Gender</label>
-            <select path="empGender" id="empGender">
+            <select name="empGender" id="empGender">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
             </select>
             <label for="empPhone">Phone</label>
-            <input type="text" id="empPhone" path="empPhone" required>
+            <input type="text" id="empPhone" name="empPhone" required>
             <label for="empAddress">Address</label>
-            <input type="text" id="empAddress" path="empAddress" required>
+            <input type="text" id="empAddress" name="empAddress" required>
             <label for="empBirthday">Birthday</label>
-            <input type="date" id="empBirthday" path="empBirthday" required>
+            <input type="date" id="empBirthday" name="empBirthday" required>
             <label for="empStartDate">Start date</label>
-            <input type="date" id="empStartDate" path="empStartDate" required>
+            <input type="date" id="empStartDate" name="empStartDate" required>
             <label for="teamID">Team</label>
-            <select path="teamID" id="teamID">
+            <select name="teamID" id="teamID">
                 <c:forEach items="#{teamList}" var="e">
                     <option value="${e.teamID}">${e.teamName}</option>
                 </c:forEach>
             </select>
             <label for="projectID">Project</label>
-            <select path="projectID" id="projectID">
+            <select name="projectID" id="projectID">
                 <c:forEach items="#{projectList}" var="e">
                     <option value="${e.projectID}">${e.projectName}</option>
                 </c:forEach>
             </select>
-            <label for="empStatus">Status(active/inactive)</label>
-            <input type="text" id="empStatus" name="empStatus" required>
+            <label>Status(active/inactive)</label>
+            <label class="toggle">
+                <input type="checkbox" name="empStatus" value="true">
+                <span class="slider"></span>
+                <span class="labels" data-on="Active" data-off="Inactive"></span>
+            </label>
             <label for="empEmail">Email</label>
             <input type="email" id="empEmail" name="empEmail" required>
         </div>
@@ -147,6 +151,72 @@
         <button type="submit">Save</button>
     </form>
 </div>
+<script src="//code.jquery.com/jquery-3.5.1.min.js" ></script>
 <script type="text/javascript" src="/Mini-project-springmvc/getResource/js/listEmployee.js" ></script>
+<script>
+    function deleteSelectedEmployees() {
+        const checkedCheckboxes = document.querySelectorAll('input[name="checkbox"]:checked');
+
+        if (checkedCheckboxes.length === 0) {
+            alert('Choose employees to delete.');
+            return;
+        }
+
+        const confirmDelete = confirm('Are you sure to delete those employees');
+        if (confirmDelete) {
+            const employeeIDs = Array.from(checkedCheckboxes).map(checkbox => checkbox.id);
+
+            $.ajax({
+                type: "POST",
+                url: "<c:url value='/deleteEmployees'/>",
+                data: {
+                    employeeIDs: employeeIDs,
+                    username: "${username}"
+                },
+                success: function(response) {
+                    console.log(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    alert("Đã xảy ra lỗi khi xóa nhân viên.");
+                }
+            });
+        }
+    }
+    function showPopupWithData(empID) {
+        let employee = getEmployeeByID(empID);
+
+        showPopup();
+
+        document.getElementById('empName').value = employee.empName;
+        document.getElementById('empGender').value = employee.empGender ? 'Male' : 'Female';
+        document.getElementById('empPhone').value = employee.empPhone;
+        document.getElementById('empAddress').value = employee.empAddress;
+        document.getElementById('empBirthday').value = formatDate(employee.empBirthday);
+        document.getElementById('empStartDate').value = formatDate(employee.empStartDate);
+        document.getElementById('teamID').value = employee.teamID;
+        document.getElementById('projectID').value = employee.projectID;
+        document.getElementById('empStatus').checked = employee.empStatus;
+        document.getElementById('empEmail').value = employee.empEmail;
+    }
+
+    function getEmployeeByID(empID) {
+        $.ajax({
+            url: "<c:url value='/getEmployeeByID'/>",
+            type: "GET",
+            data: {
+                empID: empID
+            },
+            success: function(employee) {
+                console.log(employee);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                console.error(`Error getting employee with ID ${empID}: ${error}`);
+            }
+        });
+    }
+</script>
 </body>
 </html>

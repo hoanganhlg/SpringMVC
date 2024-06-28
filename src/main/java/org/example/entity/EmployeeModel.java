@@ -1,34 +1,35 @@
 package org.example.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 public class EmployeeModel {
     private String empName;
-    private Boolean empGender;
-    private Date empBirthday;
+    private String empGender;
     private String empPhone;
-    private String empEmail;
     private String empAddress;
-    private Date empStartDate;
-    private Boolean empStatus;
+    private LocalDate empBirthday;
+    private LocalDate empStartDate;
     private Integer teamID;
     private Integer projectID;
+    private Boolean empStatus;
+    private String empEmail;
 
     public EmployeeModel() {
     }
 
-    public EmployeeModel(String empName, Boolean empGender, String empPhone, Date empBirthday, String empEmail, String empAddress, Boolean empStatus, Integer teamID, Date empStartDate, Integer projectID) {
+    public EmployeeModel(String empName, String empGender, String empPhone, String empAddress, LocalDate empBirthday, LocalDate empStartDate, Integer teamID, Integer projectID, Boolean empStatus, String empEmail) {
         this.empName = empName;
         this.empGender = empGender;
         this.empPhone = empPhone;
-        this.empBirthday = empBirthday;
-        this.empEmail = empEmail;
         this.empAddress = empAddress;
-        this.empStatus = empStatus;
-        this.teamID = teamID;
+        this.empBirthday = empBirthday;
         this.empStartDate = empStartDate;
+        this.teamID = teamID;
         this.projectID = projectID;
+        this.empStatus = empStatus;
+        this.empEmail = empEmail;
     }
 
     public String getEmpName() {
@@ -39,11 +40,11 @@ public class EmployeeModel {
         this.empName = empName;
     }
 
-    public Boolean getEmpGender() {
+    public String getEmpGender() {
         return empGender;
     }
 
-    public void setEmpGender(Boolean empGender) {
+    public void setEmpGender(String empGender) {
         this.empGender = empGender;
     }
 
@@ -55,11 +56,11 @@ public class EmployeeModel {
         this.empPhone = empPhone;
     }
 
-    public Date getEmpBirthday() {
+    public LocalDate getEmpBirthday() {
         return empBirthday;
     }
 
-    public void setEmpBirthday(Date empBirthday) {
+    public void setEmpBirthday(LocalDate empBirthday) {
         this.empBirthday = empBirthday;
     }
 
@@ -79,11 +80,11 @@ public class EmployeeModel {
         this.empAddress = empAddress;
     }
 
-    public Date getEmpStartDate() {
+    public LocalDate getEmpStartDate() {
         return empStartDate;
     }
 
-    public void setEmpStartDate(Date empStartDate) {
+    public void setEmpStartDate(LocalDate empStartDate) {
         this.empStartDate = empStartDate;
     }
 
