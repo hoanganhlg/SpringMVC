@@ -152,3 +152,17 @@ table {
 .toggle input:checked~.labels::before {
     opacity: 1;
 }
+
+#empInfoForm {
+    position: absolute;
+    top: -400px;
+    padding-bottom: 50px;
+}
+
+.formButton {
+    display: grid;
+    grid-template-columns: auto auto;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

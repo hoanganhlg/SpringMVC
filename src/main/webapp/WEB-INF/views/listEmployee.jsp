@@ -22,32 +22,40 @@
 <body>
 <fieldset>
     <legend>Employee Management</legend>
-    <div class="filter">
-        <label for="team">Team</label>
-        <select name="team" id="team">
-            <c:forEach items="#{teamList}" var="t">
-                <option value="${t.teamID}">${t.teamName}</option>
-            </c:forEach>
-        </select>
-        <label for="project">Project</label>
-        <select name="project" id="project">
-            <c:forEach items="#{projectList}" var="p">
-                <option value="${p.projectName}">${p.projectName}</option>
-            </c:forEach>
-        </select>
-        <label for="status">Status</label>
-        <select name="status" id="status">
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-        </select>
-        <label for="fromdate">Start date</label>
-        <input type="date" id="fromdate" name="fromdate" required>
-        <input type="date" id="todate" name="todate" required>
-    </div>
-    <div class="search">
-        <input type="search" id="searchBar" name="searchBar" required>
-        <button>Search</button>
-    </div>
+    <c:url var="searchLink" value="/searchEmployee">
+    </c:url>
+    <form id="searchForm" action="${searchLink}" method="get" modelAttribute="searchInfo" >
+        <div class="filter">
+            <input type="hidden" id="username" name="empID" value="${username}">
+            <label for="team">Team</label>
+            <select name="team" id="team">
+                <option value="">--All--</option>
+                <c:forEach items="#{teamList}" var="t">
+                    <option value="${t.teamID}">${t.teamName}</option>
+                </c:forEach>
+            </select>
+            <label for="project">Project</label>
+            <select name="project" id="project">
+                <option value="">--All--</option>
+                <c:forEach items="#{projectList}" var="p">
+                    <option value="${p.projectName}">${p.projectName}</option>
+                </c:forEach>
+            </select>
+            <label for="status">Status</label>
+            <select name="status" id="status">
+                <option value="">--All--</option>
+                <option value='True'>Active</option>
+                <option value='False'>Inactive</option>
+            </select>
+            <label for="fromdate">Start date</label>
+            <input type="date" id="fromdate" name="fromdate" >
+            <input type="date" id="todate" name="todate" >
+        </div>
+        <div class="search">
+            <input type="search" id="searchBar" name="searchBar" >
+            <button type="submit">Search</button>
+        </div>
+    </form>
 </fieldset>
 <div>
     <label>Total: ${fn:length(listEmployee)}</label>
@@ -100,16 +108,34 @@
                     <c:if test="${e.empStatus}">Active</c:if>
                     <c:if test="${!e.empStatus}">Inactive</c:if>
                 </th>
-                <th onclick="showPopupWithData(${e.empID})" style="cursor: pointer"><i class="fa-regular fa-pen-to-square"></i></th>
+                <th onclick="getEmployeeByID('${e.empID}')">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </th>
             </tr>
             </tbody>
         </c:forEach>
     </table>
 </div>
+<c:if test="${not empty errorCreateEmpMessage}">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            showPopup();
+            showErrorCreateEmp();
+        });
+    </script>
+</c:if>
 <div class="popup-overlay"></div>
-<div class="popup">
+<div class="popup" style="position: absolute; top: 400px; padding-bottom: 50px;">
     <p>Employee Information</p>
-    <form action="<c:url value="/addNewEmployee?username=${username}"/>" method="post" modelAttribute="employeeModel">
+    <input type="hidden" id="empID" name="empID" value="${empID}">
+    <c:url var="insertLink" value="/addNewEmployee">
+        <c:param name="username" value="${username}"/>
+    </c:url>
+    <c:url var="updateLink" value="/updateEmployee">
+        <c:param name="username" value="${username}"/>
+    </c:url>
+
+    <form id="empInfoForm" action="${insertLink}" method="post" modelAttribute="employeeModel" >
         <div class="empInformation">
             <label for="empName">Name</label>
             <input type="text" id="empName" name="empName" required>
@@ -140,15 +166,17 @@
             </select>
             <label>Status(active/inactive)</label>
             <label class="toggle">
-                <input type="checkbox" name="empStatus" value="true">
+                <input type="checkbox" id="empStatus" name="empStatus">
                 <span class="slider"></span>
                 <span class="labels" data-on="Active" data-off="Inactive"></span>
             </label>
             <label for="empEmail">Email</label>
-            <input type="email" id="empEmail" name="empEmail" required>
+            <input type="text" id="empEmail" name="empEmail" required>
         </div>
-        <button onclick="closePopup()">Cancel</button>
-        <button type="submit">Save</button>
+        <div class="formButton" style="display: grid; grid-template-columns: auto auto; position: absolute; bottom: 0; right: 0;">
+            <button type="button" onclick="closePopup()" style="margin-right: 20px;">Cancel</button>
+            <button type="submit" onclick="resetEmpID()" style="margin-right: 20px;">Save</button>
+        </div>
     </form>
 </div>
 <script src="//code.jquery.com/jquery-3.5.1.min.js" ></script>
@@ -179,44 +207,58 @@
                 },
                 error: function(xhr, status, error) {
                     console.error(error);
-                    alert("Đã xảy ra lỗi khi xóa nhân viên.");
+                    alert("Cannot delete.");
                 }
             });
         }
     }
-    function showPopupWithData(empID) {
-        let employee = getEmployeeByID(empID);
-
-        showPopup();
-
-        document.getElementById('empName').value = employee.empName;
-        document.getElementById('empGender').value = employee.empGender ? 'Male' : 'Female';
-        document.getElementById('empPhone').value = employee.empPhone;
-        document.getElementById('empAddress').value = employee.empAddress;
-        document.getElementById('empBirthday').value = formatDate(employee.empBirthday);
-        document.getElementById('empStartDate').value = formatDate(employee.empStartDate);
-        document.getElementById('teamID').value = employee.teamID;
-        document.getElementById('projectID').value = employee.projectID;
-        document.getElementById('empStatus').checked = employee.empStatus;
-        document.getElementById('empEmail').value = employee.empEmail;
-    }
-
     function getEmployeeByID(empID) {
-        $.ajax({
+        return $.ajax({
             url: "<c:url value='/getEmployeeByID'/>",
             type: "GET",
             data: {
-                empID: empID
+                empID: empID,
+                username: "${username}"
+            },
+            headers: {
+                'Accept': 'application/json'
             },
             success: function(employee) {
-                console.log(employee);
+                let empBirthdayStr = employee.empBirthday[0] + '-' +
+                    String(employee.empBirthday[1]).padStart(2, '0') + '-' +
+                    String(employee.empBirthday[2]).padStart(2, '0');
+                let empStartDateStr = employee.empStartDate[0] + '-' +
+                    String(employee.empStartDate[1]).padStart(2, '0') + '-' +
+                    String(employee.empStartDate[2]).padStart(2, '0');
+                let updateLink = "${updateLink}&empID=" + employee.empID;
+                document.getElementById('empID').value = employee.empID;
+                showPopup();
+
+                document.getElementById('empName').value = employee.empName;
+                document.getElementById('empGender').value = employee.empGender ? 'Male' : 'Female';
+                document.getElementById('empPhone').value = employee.empPhone;
+                document.getElementById('empAddress').value = employee.empAddress;
+                document.getElementById('empBirthday').value = empBirthdayStr;
+                document.getElementById('empStartDate').value = empStartDateStr;
+                document.getElementById('teamID').value = employee.teamID;
+                document.getElementById('projectID').value = employee.projectID;
+                document.getElementById('empStatus').checked = employee.empStatus;
+                document.getElementById('empEmail').value = employee.empEmail;
+
+                document.getElementById('empInfoForm').action = updateLink;
             },
             error: function(xhr, status, error) {
                 console.error(error);
-                console.error(`Error getting employee with ID ${empID}: ${error}`);
+                console.error(`Cannot get emp: ${empID}`);
             }
         });
     }
+
+
+    function showErrorCreateEmp() {
+        alert("${errorCreateEmpMessage}");
+    }
+
 </script>
 </body>
 </html>

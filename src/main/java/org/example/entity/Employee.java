@@ -1,5 +1,6 @@
 package org.example.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -7,11 +8,11 @@ public class Employee {
     private Integer empID;
     private String empName;
     private Boolean empGender;
-    private Date empBirthday;
+    private LocalDate empBirthday;
     private String empPhone;
     private String empEmail;
     private String empAddress;
-    private Date empStartDate;
+    private LocalDate empStartDate;
     private Boolean empStatus;
     private String createBy;
     private String updateBy;
@@ -24,7 +25,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(Integer empID, String empName, Boolean empGender, Date empBirthday, String empPhone, String empEmail, String empAddress, Date empStartDate, Boolean empStatus, String createBy, String updateBy, LocalDateTime createAt, LocalDateTime updateAt, Integer teamID, Integer projectID, Boolean isLeader) {
+    public Employee(Integer empID, String empName, Boolean empGender, LocalDate empBirthday, String empPhone, String empEmail, String empAddress, LocalDate empStartDate, Boolean empStatus, String createBy, String updateBy, LocalDateTime createAt, LocalDateTime updateAt, Integer teamID, Integer projectID, Boolean isLeader) {
         this.empID = empID;
         this.empName = empName;
         this.empGender = empGender;
@@ -67,11 +68,11 @@ public class Employee {
         this.empGender = empGender;
     }
 
-    public Date getEmpBirthday() {
+    public LocalDate getEmpBirthday() {
         return empBirthday;
     }
 
-    public void setEmpBirthday(Date empBirthday) {
+    public void setEmpBirthday(LocalDate empBirthday) {
         this.empBirthday = empBirthday;
     }
 
@@ -99,11 +100,11 @@ public class Employee {
         this.empAddress = empAddress;
     }
 
-    public Date getEmpStartDate() {
+    public LocalDate getEmpStartDate() {
         return empStartDate;
     }
 
-    public void setEmpStartDate(Date empStartDate) {
+    public void setEmpStartDate(LocalDate empStartDate) {
         this.empStartDate = empStartDate;
     }
 
@@ -170,4 +171,5 @@ public class Employee {
     public void setLeader(Boolean leader) {
         isLeader = leader;
     }
+
 }

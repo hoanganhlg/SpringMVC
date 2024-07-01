@@ -9,6 +9,7 @@
         <typeAlias alias="Project" type="org.example.entity.Project"/>
         <typeAlias alias="Team" type="org.example.entity.Team"/>
         <typeAlias type="org.example.dto.EmployeeDTO" alias="EmployeeDTO"/>
+        <typeAlias type="org.example.dto.SearchInfoDTO" alias="SearchInfoDTO"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">

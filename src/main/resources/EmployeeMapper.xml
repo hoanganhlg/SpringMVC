@@ -91,7 +91,7 @@
         updateBy = #{updateBy},
         updateAt = #{updateAt},
         teamID = #{teamID},
-        projectID = #{projectID},
+        projectID = #{projectID}
         WHERE
         empID = #{empID}
     </update>
@@ -99,8 +99,41 @@
         SELECT MAX(empID) AS last_id
         FROM Employee
     </select>
-    <delete id="deleteEmployees" parameterType="string">
+    <delete id="deleteEmployees" parameterType="list">
         DELETE FROM employee
-        WHERE empID IN #{ids}
+        WHERE empID IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </delete>
+    <select id="searchEmployees" parameterType="SearchInfoDTO" resultType="EmployeeDTO">
+        SELECT
+        e.empID,
+        e.empName,
+        e.empGender,
+        e.empBirthday,
+        e.empPhone,
+        e.empEmail,
+        e.empAddress,
+        e.empStartDate,
+        e.empStatus,
+        t.teamName,
+        p.projectName,
+        (SELECT e2.empName
+        FROM Employee e2
+        WHERE e2.projectID = e.projectID
+        AND e2.isLeader = 1
+        LIMIT 1) AS leaderName
+        FROM Employee e
+        LEFT JOIN Team t ON e.teamID = t.teamID
+        LEFT JOIN Project p ON e.projectID = p.projectID
+        WHERE
+        (e.teamID = COALESCE(#{teamID}, e.teamID))
+        AND (e.projectID = COALESCE(#{projectID}, e.projectID))
+        AND (e.empStatus = COALESCE(#{empStatus}, e.empStatus))
+        AND (e.empName LIKE CONCAT('%', COALESCE(#{empName}, ''), '%'))
+        AND ((e.empStartDate BETWEEN COALESCE(#{fromDate}, e.empStartDate) AND COALESCE(#{toDate}, e.empStartDate)))
+    </select>
+
+
 </mapper>
